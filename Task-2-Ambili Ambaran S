@@ -1,0 +1,58 @@
+# DecodeLabs Internship - Week 2 Assignment
+# AI Track: Data Classification using Supervised Learning (KNN)
+
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, f1_score, accuracy_score
+
+def main():
+    print("--- DecodeLabs Machine Learning Model Training ---")
+    
+    # 1. Load the benchmark Iris dataset as specified in the kit
+    iris = load_iris()
+    X = iris.data  # Features: Sepal/Petal dimensions
+    y = iris.target  # Classes: Setosa, Versicolor, Virginica
+    
+    print(f"Dataset loaded successfully.")
+    print(f"Total samples: {X.shape[0]}, Features: {X.shape[1]}, Classes: {len(np.unique(y))}")
+    
+    # 2. Split the data into Training (80%) and Testing (20%) sets
+    # Shuffling is handled automatically by train_test_split to avoid order bias
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.20, random_state=42, stratify=y
+    )
+    
+    # 3. Apply Feature Scaling using StandardScaler (Mean=0, Variance=1)
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    print("Data scaling and train-test split complete.")
+    
+    # 4. Initialize and train the K-Nearest Neighbors (KNN) Classifier
+    # Using k=3 as a standard simple starting baseline
+    knn_model = KNeighborsClassifier(n_neighbors=3)
+    knn_model.fit(X_train_scaled, y_train)
+    print("KNN model training process complete.\n")
+    
+    # 5. Run predictions on the unseen test dataset
+    y_pred = knn_model.predict(X_test_scaled)
+    
+    # 6. Evaluation Metrics
+    accuracy = accuracy_score(y_test, y_pred)
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    # Using 'weighted' average since we are dealing with multi-class targets
+    f1 = f1_score(y_test, y_pred, average='weighted')
+    
+    # Print out results structured nicely
+    print("=== MODEL PERFORMANCE METRICS ===")
+    print(f"Overall Accuracy : {accuracy * 100:.2f}%")
+    print(f"Weighted F1-Score: {f1:.4f}")
+    print("\nConfusion Matrix:")
+    print(conf_matrix)
+    print("=================================")
+
+if __name__ == "__main__":
+    main()
