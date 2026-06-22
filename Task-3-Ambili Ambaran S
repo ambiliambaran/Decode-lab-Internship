@@ -1,0 +1,79 @@
+# DecodeLabs Internship - Week 3 Assignment
+# AI Track: AI Recommendation Logic Engine
+
+import numpy as np
+
+def calculate_similarity(user_vector, item_vector):
+    # Standard dot product calculation for vector alignment
+    dot_product = np.dot(user_vector, item_vector)
+    
+    # Calculate magnitudes to normalize vectors
+    user_norm = np.linalg.norm(user_vector)
+    item_norm = np.linalg.norm(item_vector)
+    
+    # Avoid dividing by zero if a user has selected absolutely nothing
+    if user_norm == 0 or item_norm == 0:
+        return 0.0
+        
+    # Returns the similarity score between 0 and 1
+    return dot_product / (user_norm * item_norm)
+
+def main():
+    print("--- DecodeLabs AI Recommendation Logic Initialized ---")
+    
+    # 1. Vocabulary mapping (consistent attribute space)
+    # [Python, Web Dev, Automation, Machine Learning, Cloud]
+    vocab = ["python", "web dev", "automation", "machine learning", "cloud"]
+    
+    # 2. Available Items/Projects Dataset inside the library
+    items = {
+        "Project A: Automated Cloud Deployment": np.array([1, 0, 1, 0, 1]),
+        "Project B: Full-Stack Web Application": np.array([0, 1, 0, 0, 1]),
+        "Project C: Predictive AI Engine Pipeline": np.array([1, 0, 0, 1, 0]),
+        "Project D: Robotic Process Automation Bot": np.array([1, 0, 1, 0, 0]),
+        "Project E: Deep Learning Computer Vision": np.array([1, 0, 0, 1, 1])
+    }
+    
+    # 3. Present available choices to the user
+    print("Available Domain Skill Tags:")
+    print(", ".join(vocab))
+    print("-" * 50)
+    
+    # 4. Take User Input choices
+    user_selection = input("Enter your interest tags (separated by commas): ")
+    
+    # Clean and parse user inputs
+    tags = [tag.strip().lower() for tag in user_selection.split(",")]
+    
+    # 5. Build User Vector based on matching tags
+    user_vector = np.zeros(len(vocab))
+    for i, word in enumerate(vocab):
+        if word in tags:
+            user_vector[i] = 1
+            
+    print(f"\nGenerated User Profile Vector: {user_vector}")
+    print("Calculating pattern alignment scores...")
+    
+    # 6. Calculate similarity scores across items
+    scores = {}
+    for item_name, item_vector in items.items():
+        score = calculate_similarity(user_vector, item_vector)
+        scores[item_name] = score
+        
+    # 7. Sort and display the top recommendations
+    sorted_recommendations = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    
+    print("\n=== TOP RECOMMENDED ITEMS ===")
+    count = 1
+    for item_name, score in sorted_recommendations:
+        # Only display items with some positive alignment factor
+        if score > 0:
+            print(f"{count}. {item_name} (Match Score: {score * 100:.1f}%)")
+            count += 1
+            
+    if count == 1:
+        print("No matching projects found for your selected tags. Please try other skills!")
+    print("================================")
+
+if __name__ == "__main__":
+    main()
