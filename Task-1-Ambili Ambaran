@@ -1,0 +1,37 @@
+# DecodeLabs Internship - Week 1 Assignment
+# AI Track: Rule-Based Chatbot
+
+def main():
+    # Using a dictionary for fast lookup instead of a long if-elif ladder
+    responses = {
+        "hello": "Hi there! I am your DecodeLabs AI assistant. How can I help you today?",
+        "hi": "Hello! Ready to build some intelligent systems?",
+        "help": "I can guide you through your track or answer basic logic queries.",
+        "status": "All systems nominal. Running deterministic logic engine module 01.",
+        "domain": "Current track: Artificial Intelligence Engineering (Control Layer Guardrails).",
+        "bye": "Goodbye! Remember to sync your logic updates to your repository."
+    }
+    
+    print("--- DecodeLabs Chatbot Engine Started ---")
+    print("Type your message below (or type 'exit' to quit):\n")
+    
+    # Continuous loop to keep the chat running
+    while True:
+        user_input = input("You: ")
+        
+        # Clean the input by removing extra spaces and changing to lowercase
+        clean_input = user_input.strip().lower()
+        
+        # Check for exit command first
+        if clean_input == 'exit':
+            print("Shutting down chatbot. Bye!")
+            break
+            
+        # Get response from dictionary, or show fallback message if not found
+        bot_response = responses.get(clean_input, "I'm sorry, I don't understand that. Please try typing 'hello', 'status', or 'domain'.")
+        
+        print("Bot:", bot_response)
+        print() # blank line for spacing
+
+if __name__ == "__main__":
+    main()
